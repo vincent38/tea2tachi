@@ -44,7 +44,7 @@ tea2tachi:
 ```
 
 If using compose, please change the context according to your own configuration.
-The configuration above handles building locally. in a relative folder of name tea2tachi.
+The configuration above handles building locally in a relative folder named `tea2tachi`.
 
 You can then build and deploy with two commands:
 ```
