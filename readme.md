@@ -33,9 +33,9 @@ tea2tachi:
     restart: unless-stopped
     container_name: tea2tachi
     environment:
-        - DISCORD_KEY='your_discord_api_key_here'
-        - TEA_API_URL='https://maitea.app/api/v1/export/tachi'
-        - TACHI_API_URL='https://kamai.tachi.ac/ir/direct-manual/import'
+        - DISCORD_KEY=your_discord_api_key_here
+        - TEA_API_URL=https://maitea.app/api/v1/export/tachi
+        - TACHI_API_URL=https://kamai.tachi.ac/ir/direct-manual/import
     volumes:
         - tea2tachi_data:/app/data
     build:
