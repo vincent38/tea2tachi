@@ -49,7 +49,7 @@ The configuration above handles building locally. in a relative folder of name t
 You can then build and deploy with two commands:
 ```
 # Rebuild all images
-docker-compose build
+docker compose build
 # Run system
-docker-compose up
+docker compose up
 ```
