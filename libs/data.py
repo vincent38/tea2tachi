@@ -36,7 +36,7 @@ class Database:
                             tachi_key
                         else
                             {tachi_key}
-                        end,
+                        end
                 WHERE user_id = '{user_id}'
                 """)
             self.con.commit()
