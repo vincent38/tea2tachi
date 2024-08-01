@@ -15,7 +15,7 @@ class MyClient(discord.Client):
         self.tree = app_commands.CommandTree(self)
 
     async def setup_hook(self):
-        self.tree.copy_global_to()
+        #self.tree.copy_global_to()
         await self.tree.sync()
 
 
