@@ -12,16 +12,48 @@ class Database:
         self.cur.execute("CREATE TABLE logs(user_id VARCHAR(100), date_tentative TIMESTAMP, status VARCHAR(100))")
         self.con.commit()
     
-    def register(self, user_id, tea_key, tachi_key):
+    def registerBindings(self, user_id, tea_key, tachi_key):
         if self.cur.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'").fetchone() is None:
             self.cur.execute(f"""
                 INSERT INTO users VALUES
                     ('{user_id}', '{tea_key}', '{tachi_key}')
                 """)
             self.con.commit()
-            return 'REGISTRATION_DONE'
+            return 'Registration done. You can now trigger a manual synchronization.'
         else:
-            return 'USER_ALREADY_BINDED'
+            return 'API keys are already binded to this user. You can either edit the bindings or remove them.'
+    
+    def editBindings(self, user_id, tea_key, tachi_key):
+        if self.cur.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'").fetchone() is not None:
+            self.cur.execute(f"""
+                UPDATE users SET
+                    tea_key = case when coalesce({tea_key}, '') = '' then
+                            tea_key
+                        else
+                            {tea_key}
+                        end,
+                    tachi_key = case when coalesce({tachi_key}, '') = '' then
+                            tachi_key
+                        else
+                            {tachi_key}
+                        end,
+                WHERE user_id = '{user_id}'
+                """)
+            self.con.commit()
+            return 'Updated bindings for this user.'
+        else:
+            return 'User is not yet registered on this application.'
+    
+    def deleteBindings(self, user_id):
+        if self.cur.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'").fetchone() is not None:
+            self.cur.execute(f"""
+                DELETE FROM users
+                WHERE user_id = '{user_id}'
+                """)
+            self.con.commit()
+            return 'Deleted bindings for this user. Thank you for using our services !'
+        else:
+            return 'User is not yet registered on this application.'
         
     def getUserData(self, user_id):
         res = self.cur.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'")
