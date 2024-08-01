@@ -9,18 +9,14 @@ DISCORD_KEY = os.getenv('DISCORD_KEY')
 if DISCORD_KEY is None:
     raise Exception("Fatal - Missing Discord API key")
 
-#MY_GUILD = discord.Object(id=0)  # replace with your guild id if targeting only one w/ your PI
-
 class MyClient(discord.Client):
     def __init__(self, *, intents: discord.Intents):
         super().__init__(intents=intents)
         self.tree = app_commands.CommandTree(self)
 
-    # Enable if you want to speed up commands sync to one guild
-    #async def setup_hook(self):
-        # This copies the global commands over to your guild.
-        #self.tree.copy_global_to(guild=MY_GUILD)
-        #await self.tree.sync(guild=MY_GUILD)
+    async def setup_hook(self):
+        self.tree.copy_global_to()
+        await self.tree.sync()
 
 
 intents = discord.Intents.default()
