@@ -1,4 +1,5 @@
 import os
+from typing import Optional
 
 import libs.bridge as bridge
 import discord
@@ -31,6 +32,8 @@ async def on_ready():
     print(f'Logged in as {client.user} (ID: {client.user.id})')
     print('------')
 
+# Manual sync command
+
 @client.tree.command()
 async def sync(interaction: discord.Interaction):
     """Starts a manual sync for the Tea and Tachi accounts linked to your Discord user"""
@@ -39,16 +42,34 @@ async def sync(interaction: discord.Interaction):
     reply_channel = interaction.channel
     await reply_channel.send(f'{interaction.user.mention} -> Sync process has ended. Reply from Bridge: {reply}')
 
+# Account-related commands
+
 @client.tree.command()
 @app_commands.describe(
     tea_key='Your Tea API Key',
     tachi_key='Your Tachi API Key',
 )
-async def bind_account(interaction: discord.Interaction, tea_key: str, tachi_key: str):
+async def account_register(interaction: discord.Interaction, tea_key: str, tachi_key: str):
     """Binds your Tea and Tachi API keys to your Discord user"""
     reply = bridge.registerUser(interaction.user.id, tea_key, tachi_key)
     await interaction.response.send_message(f'Reply from Bridge: {reply}')
     
+@client.tree.command()
+@app_commands.describe(
+    tea_key='The new Tea API Key to bind, leave empty if no modification.',
+    tachi_key='The new Tachi API Key to bind, leave empty if no modification.',
+)
+async def account_edit(interaction: discord.Interaction, tea_key: Optional[str] = None, tachi_key: Optional[str] = None):
+    reply = bridge.editUser(interaction.user.id, tea_key, tachi_key)
+    await interaction.response.send_message(f'Reply from Bridge: {reply}')
+    
+@client.tree.command()
+async def account_remove(interaction: discord.Interaction):
+    reply = bridge.removeUser(interaction.user.id)
+    await interaction.response.send_message(f'Reply from Bridge: {reply}')
+
+# Logging commands
+
 @client.tree.command()
 async def logbook(interaction: discord.Interaction):
     """Lists all logs regarding sync requests. Does not reconciliate with Tachi statuses for now."""
@@ -59,7 +80,7 @@ async def logbook(interaction: discord.Interaction):
     
     index = 1
     for r in reply:
-        embed.add_field(name='', value=f'{r[0]} - {r[1]}', inline=True)
+        embed.add_field(name='', value=f'{discord.utils.format_dt(r[0])} - {r[1]}', inline=True)
         index += 1
         if index > 11:
             break

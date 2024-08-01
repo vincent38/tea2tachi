@@ -2,12 +2,20 @@ from .data import Database
 from .tachi import putScoresFile
 from .tea import getDataFromTea
 
+#
+#   Management procedures
+#
+
 def setTables():
     # For reset purposes. Not to be launched on production context
     db_instance = Database()
     db_instance.setTables()
     db_instance.close()
-    
+
+#
+#   Sync procedure
+#
+
 def executeBridge(user_id):
     db_instance = Database()
     user = db_instance.getUserData(user_id)
@@ -25,11 +33,31 @@ def executeBridge(user_id):
     db_instance.close()
     return status
 
+#
+#   Account management procedures
+#
+
 def registerUser(user_id, tea_key, tachi_key):
     db_instance = Database()
-    status = db_instance.register(user_id, tea_key, tachi_key)
+    status = db_instance.registerBindings(user_id, tea_key, tachi_key)
     db_instance.close()
     return status
+
+def editUser(user_id, tea_key, tachi_key):
+    db_instance = Database()
+    status = db_instance.editBindings(user_id, tea_key, tachi_key)
+    db_instance.close()
+    return status
+
+def removeUser(user_id):
+    db_instance = Database()
+    status = db_instance.deleteBindings(user_id)
+    db_instance.close()
+    return status
+
+#
+#   Logging procedures
+#
 
 def logbook(user_id):
     db_instance = Database()
