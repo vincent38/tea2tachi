@@ -25,20 +25,19 @@ class Database:
     
     def editBindings(self, user_id, tea_key, tachi_key):
         if self.cur.execute(f"SELECT * FROM users WHERE user_id = '{user_id}'").fetchone() is not None:
-            self.cur.execute(f"""
-                UPDATE users SET
-                    tea_key = case when coalesce({tea_key}, '') = '' then
-                            tea_key
-                        else
-                            {tea_key}
-                        end,
-                    tachi_key = case when coalesce({tachi_key}, '') = '' then
-                            tachi_key
-                        else
-                            {tachi_key}
-                        end
-                WHERE user_id = '{user_id}'
-                """)
+            if tea_key is not None:
+                self.cur.execute(f"""
+                    UPDATE users SET
+                        tea_key = {tea_key}
+                    WHERE user_id = '{user_id}'
+                    """)
+            if tachi_key is not None:
+                if tea_key is not None:
+                    self.cur.execute(f"""
+                        UPDATE users SET
+                            tachi_key = {tachi_key}
+                        WHERE user_id = '{user_id}'
+                        """)
             self.con.commit()
             return 'Updated bindings for this user.'
         else:
