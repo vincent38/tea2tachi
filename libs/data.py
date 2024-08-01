@@ -28,14 +28,14 @@ class Database:
             if tea_key is not None:
                 self.cur.execute(f"""
                     UPDATE users SET
-                        tea_key = {tea_key}
+                        tea_key = '{tea_key}'
                     WHERE user_id = '{user_id}'
                     """)
             if tachi_key is not None:
                 if tea_key is not None:
                     self.cur.execute(f"""
                         UPDATE users SET
-                            tachi_key = {tachi_key}
+                            tachi_key = '{tachi_key}'
                         WHERE user_id = '{user_id}'
                         """)
             self.con.commit()
